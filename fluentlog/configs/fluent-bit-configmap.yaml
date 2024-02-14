@@ -21,6 +21,7 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-elasticsearch.conf
+    @INCLUDE output-file.conf
 
   input-kubernetes.conf: |
     [INPUT]
@@ -78,6 +79,13 @@ data:
         Replace_Dots    On
         Retry_Limit     False
         Index           myapi-%Y.%m.%d
+
+  output-file.conf: |
+    [OUTPUT]
+        Name    file
+        Match   myapi
+        Path    /var/log/fluent/myapi
+        File    myapi.log
 
   parsers.conf: |
     [PARSER]
