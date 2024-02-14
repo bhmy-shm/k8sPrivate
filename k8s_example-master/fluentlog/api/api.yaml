@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: #元数据信息
+  namespace: bhmy
+  labels: #标签
+    app: myapi  #设置标签 app
+  name: myapi  #deployment 的名称
+spec: #deployment 规范部分
+  replicas: 1 #指定副本数
+  selector: #选择器部分
+    matchLabels: #匹配标签，用于确定哪些 pod 应该由这个 deployment 管理
+      app: myapi #匹配标签 app = myapi 的
+  strategy: { } #更新策略，默认为 RollingUpdate
+  template: #pod 模版
+    metadata: #模版的原数据
+      labels: #pod 标签
+        app: myapi  #设置pod app 标签
+    spec: #pod规范部分
+      nodeName: vm-16-2-centos
+      containers: #容器定义列表
+        - image: myapp:v1.2 #容器镜像
+          name: myapptest #容器名称
+          resources: { }  #资源请求和限制
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: bhmy
+  name: myapi-external-svc
+  labels:
+    app: myapi
+spec:
+  selector:
+    app: myapi
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 8089
+      nodePort: 30089
+  type: NodePort
